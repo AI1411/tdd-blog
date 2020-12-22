@@ -17,10 +17,10 @@ class UserLoginController extends Controller
     {
         $data = $request->validate([
             'email' => ['required', 'email:filter'],
-            'password' => ['required']
+            'password' => ['required'],
         ]);
 
-        if (!auth()->attempt($data)) {
+        if (! auth()->attempt($data)) {
             throw ValidationException::withMessages(['email' => 'メールアドレスかパスワードが間違っています。']);
         }
 
