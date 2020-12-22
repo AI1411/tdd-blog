@@ -4,6 +4,7 @@ namespace Tests\Feature\Controllers\Mypage;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\ValidationException;
 use Tests\TestCase;
 
 class UserLoginControllerTest extends TestCase
@@ -113,4 +114,60 @@ class UserLoginControllerTest extends TestCase
             ->assertSee('<h1>ログイン画面</h1>', false);
     }
 
+    /**
+    * @test
+    */
+    public function 認証エラーなのでValidationExceptionが発生する()
+    {
+        $this->withoutExceptionHandling();
+        $postData = [
+            'email' => 'akira@gmail.com',
+            'password' => 'password'
+        ];
+
+//        $dbData = [
+//            'email' => 'akira@gmail.com',
+//            'password' => bcrypt('password')
+//        ];
+//
+//        $user = User::factory()->create($dbData);
+//        $this->expectException(ValidationException::class);
+
+        try {
+            $this->post('mypage/login', $postData)
+                ->assertRedirect('mypage/posts');
+            $this->fail('validationExceptionの例外が発生しませんでした。');
+        } catch (ValidationException $exception) {
+            $this->assertEquals('メールアドレスかパスワードが間違っています。',
+            $exception->errors()['email'][0] ?? ''
+            );
+        }
+    }
+
+    /**
+    * @test
+    */
+    public function 認証Ok菜々緒でvalidationExceptionの例外が出ない()
+    {
+        $postData = [
+            'email' => 'akira@gmail.com',
+            'password' => 'password'
+        ];
+
+        $dbData = [
+            'email' => 'akira@gmail.com',
+            'password' => bcrypt('password')
+        ];
+
+        $user = User::factory()->create($dbData);
+
+        try {
+            $this->post('mypage/login', $postData);
+            $this->assertTrue(true);
+        } catch(ValidationException $e) {
+            $this->fail('validationExceptionの例外が発生しました。');
+        }
+
+
+    }
 }
