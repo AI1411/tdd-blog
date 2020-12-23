@@ -147,7 +147,7 @@ class UserLoginControllerTest extends TestCase
     /**
     * @test
     */
-    public function 認証Ok菜々緒でvalidationExceptionの例外が出ない()
+    public function 認証OkでvalidationExceptionの例外が出ない()
     {
         $postData = [
             'email' => 'akira@gmail.com',
@@ -167,7 +167,22 @@ class UserLoginControllerTest extends TestCase
         } catch(ValidationException $e) {
             $this->fail('validationExceptionの例外が発生しました。');
         }
+    }
 
+    /**
+    * @test logout
+    */
+    public function ログアウトできる()
+    {
+        $this->withoutExceptionHandling();
 
+        $this->login();
+
+        $this->post('mypage/logout')
+            ->assertRedirect($url = 'mypage/login');
+
+        $this->get($url)->assertSee('ログアウトしました');
+
+        $this->assertGuest();
     }
 }

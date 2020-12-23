@@ -26,4 +26,15 @@ class UserLoginController extends Controller
 
         return redirect('mypage/posts');
     }
+
+    public function logout(Request $request)
+    {
+        auth()->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerate();
+
+        return redirect('mypage/login')->with('status', 'ログアウトしました');
+    }
 }
