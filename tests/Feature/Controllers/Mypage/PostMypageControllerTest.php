@@ -85,4 +85,23 @@ class PostMypageControllerTest extends TestCase
 
         $this->assertDatabaseHas('posts', $validData);
     }
+
+    /**
+    * @test
+    */
+    public function 投稿登録時の入力チェック()
+    {
+        $url = 'mypage/posts/create';
+
+        $this->login();
+
+        $this->app->setLocale('testing');
+
+        $this->post($url, ['title' => ''])->assertSessionHasErrors(['title' => 'required']);
+        $this->post($url, ['title' => str_repeat('a', 256)])->assertSessionHasErrors(['title' => 'max']);
+        $this->post($url, ['title' => str_repeat('a', 255)])->assertSessionDoesntHaveErrors(['title' => 'max']);
+        $this->post($url, ['body' => ''])->assertSessionHasErrors(['body' => 'required']);
+
+        $this->from($url)->post($url, [])->assertRedirect($url);
+    }
 }
