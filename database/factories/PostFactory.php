@@ -57,4 +57,15 @@ class PostFactory extends Factory
             }
         });
     }
+
+    public function validData($overrides = [])
+    {
+        $validData = [
+            'title' => 'title',
+            'body' => 'body',
+            'status' => 1
+        ];
+
+        return array_merge($validData, $overrides);
+    }
 }

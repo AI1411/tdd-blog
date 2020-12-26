@@ -18,4 +18,5 @@ Route::middleware('auth')->group(function () {
 
     Route::get('mypage/posts', [\App\Http\Controllers\Mypage\PostMypageController::class, 'index']);
     Route::get('mypage/posts/create', [\App\Http\Controllers\Mypage\PostMypageController::class, 'create']);
+    Route::post('mypage/posts/create', [\App\Http\Controllers\Mypage\PostMypageController::class, 'store']);
 });

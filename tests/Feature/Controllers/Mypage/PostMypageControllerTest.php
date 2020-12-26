@@ -21,10 +21,9 @@ class PostMypageControllerTest extends TestCase
     {
         $url = 'mypage/login';
 
-        $this->get('mypage/posts')
-            ->assertRedirect($url);
-        $this->get('mypage/posts/create')
-            ->assertRedirect($url);
+        $this->get('mypage/posts')->assertRedirect($url);
+        $this->get('mypage/posts/create')->assertRedirect($url);
+        $this->post('mypage/posts/create', [])->assertRedirect($url);
     }
 
     /**
@@ -53,5 +52,37 @@ class PostMypageControllerTest extends TestCase
 
         $this->get('mypage/posts/create')
             ->assertOk();
+    }
+
+    /**
+    * @test store
+    */
+    public function 新規登録できる、公開の場合()
+    {
+        $this->login();
+        $validData = Post::factory()->validData();
+
+        $this->post('mypage/posts/create', $validData)
+            ->assertRedirect('mypage/posts/edit/1');
+
+        $this->assertDatabaseHas('posts', $validData);
+    }
+
+    /**
+     * @test store
+     */
+    public function 新規登録できる、非公開の場合()
+    {
+        $this->login();
+        $validData = Post::factory()->validData();
+
+        unset($validData['status']);
+
+        $this->post('mypage/posts/create', $validData)
+            ->assertRedirect('mypage/posts/edit/1');
+
+        $validData['status'] = 0;
+
+        $this->assertDatabaseHas('posts', $validData);
     }
 }
