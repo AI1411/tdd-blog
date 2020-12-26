@@ -15,18 +15,21 @@ class PostMypageControllerTest extends TestCase
     use RefreshDatabase;
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function ゲストは投稿を管理できない()
     {
         $url = 'mypage/login';
 
         $this->get('mypage/posts')
             ->assertRedirect($url);
+        $this->get('mypage/posts/create')
+            ->assertRedirect($url);
     }
+
     /**
-    * @test index
-    */
+     * @test index
+     */
     public function マイページ、投稿一覧で自分のデータのみ表示される()
     {
         //認証している場合
@@ -39,5 +42,16 @@ class PostMypageControllerTest extends TestCase
             ->assertOk()
             ->assertDontSee($other->title)
             ->assertSee($myPost->title);
+    }
+
+    /**
+     * @test create
+     */
+    public function 新規投稿ページを開ける()
+    {
+        $this->login();
+
+        $this->get('mypage/posts/create')
+            ->assertOk();
     }
 }

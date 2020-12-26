@@ -13,4 +13,9 @@ class PostMypageController extends Controller
 
         return view('mypage.posts.index', compact('posts'));
     }
+
+    public function create()
+    {
+        return view('mypage.posts.create');
+    }
 }
