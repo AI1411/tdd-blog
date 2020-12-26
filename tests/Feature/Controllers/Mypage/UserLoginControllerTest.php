@@ -174,8 +174,6 @@ class UserLoginControllerTest extends TestCase
     */
     public function ログアウトできる()
     {
-        $this->withoutExceptionHandling();
-
         $this->login();
 
         $this->post('mypage/logout')
