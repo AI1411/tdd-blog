@@ -26,6 +26,7 @@ class PostMypageControllerTest extends TestCase
         $this->post('mypage/posts/create', [])->assertRedirect($url);
         $this->get('mypage/posts/edit/1')->assertRedirect($url);
         $this->post('mypage/posts/edit/1')->assertRedirect($url);
+        $this->delete('mypage/posts/delete/1')->assertRedirect($url);
     }
 
     /**
@@ -146,7 +147,14 @@ class PostMypageControllerTest extends TestCase
      */
     public function 他人の投稿を削除できない()
     {
-        $this->markTestIncomplete('yet');
+        $post = Post::factory()->create();
+
+        $this->login();
+
+        $this->delete('mypage/posts/delete/' . $post->id)
+            ->assertForbidden();
+
+        $this->assertCount(1, Post::all());
     }
 
     /**
@@ -191,5 +199,20 @@ class PostMypageControllerTest extends TestCase
         $post->refresh();
 
         $this->assertEquals('新本文', $post->body);
+    }
+
+    /**
+    * @test
+    */
+    public function 自分の投稿は削除できる()
+    {
+        $post = Post::factory()->create();
+
+        $this->login($post->user);
+
+        $this->delete('mypage/posts/delete/' . $post->id)
+        ->assertRedirect('mypage/posts');
+
+        $this->assertDeleted($post);
     }
 }

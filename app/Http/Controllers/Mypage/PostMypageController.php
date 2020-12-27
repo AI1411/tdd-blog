@@ -55,6 +55,16 @@ class PostMypageController extends Controller
         return redirect()->route('mypage.posts.edit', $post)->with('status', 'ブログを更新しました');
     }
 
+    public function destroy(Post $post, Request $request)
+    {
+        if ($request->user()->isNot($post->user)) {
+            abort(403);
+        }
+        $post->delete();
+
+        return redirect('mypage/posts');
+    }
+
     private function validateInput()
     {
         return request()->validate([

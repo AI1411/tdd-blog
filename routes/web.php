@@ -23,4 +23,5 @@ Route::middleware('auth')->group(function () {
     Route::post('mypage/posts/create', [PostMypageController::class, 'store']);
     Route::get('mypage/posts/edit/{post}', [PostMypageController::class, 'edit'])->name('mypage.posts.edit');
     Route::post('mypage/posts/edit/{post}', [PostMypageController::class, 'update'])->name('mypage.posts.update');
+    Route::delete('mypage/posts/delete/{post}', [PostMypageController::class, 'destroy'])->name('mypage.posts.delete');
 });
