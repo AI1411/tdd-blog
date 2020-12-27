@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\BlogViewController;
+use App\Http\Controllers\Mypage\PostMypageController;
+use App\Http\Controllers\Mypage\UserLoginController;
 use App\Http\Controllers\SignUpController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,13 +12,14 @@ Route::get('posts/{post}', [BlogViewController::class, 'show'])->name('post.show
 Route::get('signup', [SignUpController::class, 'index']);
 Route::post('signup', [SignUpController::class, 'store']);
 
-Route::get('mypage/login', [\App\Http\Controllers\Mypage\UserLoginController::class, 'index'])->name('login');
-Route::post('mypage/login', [\App\Http\Controllers\Mypage\UserLoginController::class, 'login']);
+Route::get('mypage/login', [UserLoginController::class, 'index'])->name('login');
+Route::post('mypage/login', [UserLoginController::class, 'login']);
 
 Route::middleware('auth')->group(function () {
-    Route::post('mypage/logout', [\App\Http\Controllers\Mypage\UserLoginController::class, 'logout']);
+    Route::post('mypage/logout', [UserLoginController::class, 'logout']);
 
-    Route::get('mypage/posts', [\App\Http\Controllers\Mypage\PostMypageController::class, 'index']);
-    Route::get('mypage/posts/create', [\App\Http\Controllers\Mypage\PostMypageController::class, 'create']);
-    Route::post('mypage/posts/create', [\App\Http\Controllers\Mypage\PostMypageController::class, 'store']);
+    Route::get('mypage/posts', [PostMypageController::class, 'index']);
+    Route::get('mypage/posts/create', [PostMypageController::class, 'create']);
+    Route::post('mypage/posts/create', [PostMypageController::class, 'store']);
+    Route::get('mypage/posts/edit/{post}', [PostMypageController::class, 'edit'])->name('mypage.posts.edit');
 });

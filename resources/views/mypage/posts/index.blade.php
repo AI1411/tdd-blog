@@ -13,7 +13,7 @@
 
         @foreach($posts as $post)
             <tr>
-                <td>{{ $post->title }}</td>
+                <td><a href="{{ route('mypage.posts.edit', $post) }}">{{ $post->title }}</a></td>
             </tr>
         @endforeach
     </table>

@@ -33,4 +33,14 @@ class PostMypageController extends Controller
 
         return redirect('mypage/posts/edit/' . $post->id);
     }
+
+    public function edit(Post $post, Request $request)
+    {
+        if ($request->user()->isNot($post->user)) {
+            abort(403);
+        }
+        $data = old() ?: $post;
+
+        return view('mypage.posts.edit', compact('post', 'data'));
+    }
 }

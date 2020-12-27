@@ -24,6 +24,7 @@ class PostMypageControllerTest extends TestCase
         $this->get('mypage/posts')->assertRedirect($url);
         $this->get('mypage/posts/create')->assertRedirect($url);
         $this->post('mypage/posts/create', [])->assertRedirect($url);
+        $this->get('mypage/posts/edit/1')->assertRedirect($url);
     }
 
     /**
@@ -103,5 +104,45 @@ class PostMypageControllerTest extends TestCase
         $this->post($url, ['body' => ''])->assertSessionHasErrors(['body' => 'required']);
 
         $this->from($url)->post($url, [])->assertRedirect($url);
+    }
+
+    /**
+    * @test edit
+    */
+    public function 他人の投稿の編集画面は開けない()
+    {
+        $post = Post::factory()->create();
+
+        $this->login();
+
+        $this->get('mypage/posts/edit/' . $post->id)->assertForbidden();
+    }
+
+    /**
+     * @test update
+     */
+    public function 他人の投稿は編集できない()
+    {
+        $this->markTestIncomplete('yet');
+    }
+
+    /**
+     * @test delete
+     */
+    public function 他人の投稿を削除できない()
+    {
+        $this->markTestIncomplete('yet');
+    }
+
+    /**
+    * @test edit
+    */
+    public function 自分の投稿の編集画面を開ける()
+    {
+        $post = Post::factory()->create();
+
+        $this->login($post->user);
+
+        $this->get('mypage/posts/edit/' . $post->id)->assertOk();
     }
 }
