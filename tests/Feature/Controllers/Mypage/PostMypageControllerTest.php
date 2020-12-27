@@ -25,6 +25,7 @@ class PostMypageControllerTest extends TestCase
         $this->get('mypage/posts/create')->assertRedirect($url);
         $this->post('mypage/posts/create', [])->assertRedirect($url);
         $this->get('mypage/posts/edit/1')->assertRedirect($url);
+        $this->post('mypage/posts/edit/1')->assertRedirect($url);
     }
 
     /**
@@ -144,5 +145,37 @@ class PostMypageControllerTest extends TestCase
         $this->login($post->user);
 
         $this->get('mypage/posts/edit/' . $post->id)->assertOk();
+    }
+
+    /**
+    * @test
+    */
+    public function 自分の投稿を更新できる()
+    {
+        $validData = [
+            'title' => '新タイトル',
+            'body' => '新本文',
+            'status' => 1
+        ];
+
+        $post = Post::factory()->create();
+
+        $this->login($post->user);
+
+        $this->post('mypage/posts/edit/' . $post->id, $validData)->assertRedirect('mypage/posts/edit/' . $post->id);
+
+        $this->get('mypage/posts/edit/' . $post->id)->assertSee('ブログを更新しました');
+
+        $this->assertDatabaseHas('posts', $validData);
+
+        $this->assertCount(1, Post::all());
+
+        $this->assertEquals('新タイトル', $post->fresh()->title);
+        $this->assertEquals('新本文', $post->fresh()->body);
+
+        //更新後のデータを取得する
+        $post->refresh();
+
+        $this->assertEquals('新本文', $post->body);
     }
 }

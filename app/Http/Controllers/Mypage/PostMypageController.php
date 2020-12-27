@@ -22,10 +22,7 @@ class PostMypageController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'title' => ['required','max:255'],
-            'body' => ['required']
-        ]);
+        $data = $this->validateInput();
 
         $data['status'] = $request->boolean('status');
 
@@ -42,5 +39,24 @@ class PostMypageController extends Controller
         $data = old() ?: $post;
 
         return view('mypage.posts.edit', compact('post', 'data'));
+    }
+
+    public function update(Post $post, Request $request)
+    {
+        $data = $this->validateInput();
+
+        $data['status'] = $request->boolean('status');
+
+        $post->update($data);
+
+        return redirect()->route('mypage.posts.edit', $post)->with('status', 'ブログを更新しました');
+    }
+
+    private function validateInput()
+    {
+        return request()->validate([
+            'title' => ['required','max:255'],
+            'body' => ['required']
+        ]);
     }
 }
