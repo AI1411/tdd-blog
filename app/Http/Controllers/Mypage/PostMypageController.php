@@ -43,6 +43,9 @@ class PostMypageController extends Controller
 
     public function update(Post $post, Request $request)
     {
+        if ($request->user()->isNot($post->user)) {
+            abort(403);
+        }
         $data = $this->validateInput();
 
         $data['status'] = $request->boolean('status');

@@ -124,7 +124,21 @@ class PostMypageControllerTest extends TestCase
      */
     public function 他人の投稿は編集できない()
     {
-        $this->markTestIncomplete('yet');
+        $validData = [
+            'title' => '新タイトル',
+            'body' => '新本文',
+            'status' => 1
+        ];
+
+        $post = Post::factory()->create();
+
+        $this->login();
+
+        $this->post('mypage/posts/edit/' . $post->id, $validData)
+            ->assertForbidden();
+
+        $this->assertCount(1, Post::all());
+        $this->assertEquals($post->toArray(), Post::first()->toArray());
     }
 
     /**
